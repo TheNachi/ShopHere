@@ -6,12 +6,23 @@
 //
 
 import SwiftUI
+import Swinject
 
 @main
 struct ShopHereApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ProductView()
+    let container: Container
+        init() {
+            container = Container()
+            let assembler = Assembler([AppAssembly()], container: container)
         }
-    }
+
+        var body: some Scene {
+            WindowGroup {
+                if let viewModel = container.resolve(ProductListViewModel.self) {
+                    ProductView(viewModel: viewModel)
+                } else {
+                    Text("Failed to resolve dependencies")
+                }
+            }
+        }
 }

@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct ProductView: View {
+    @StateObject private var viewModel: ProductListViewModel
+    
+    init(viewModel: ProductListViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            SearchBarView(searchQuery: $viewModel.searchQuery)
+            ProductListView(viewModel: viewModel)
         }
-        .padding()
+        .onAppear {
+            viewModel.fetchProducts()
+        }
     }
-}
-
-#Preview {
-    ProductView()
 }
