@@ -10,7 +10,7 @@ import SwiftUI
 struct ProductView: View {
     @StateObject private var viewModel: ProductListViewModel
     @StateObject private var router = Router()
-    @State private var isLoading = true // Track loading state
+    @State private var isLoading = true
 
     init(viewModel: ProductListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -20,42 +20,54 @@ struct ProductView: View {
         NavigationView {
             VStack {
                 if isLoading {
-                    ProgressView() // Show ProgressView while loading
+                    ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(2) // You can scale the ProgressView for better visibility
+                        .scaleEffect(2)
                         .padding()
                 } else {
-                    switch router.currentScreen {
-                    case .productList:
-                        ProductListView(viewModel: viewModel, router: router)
-                    case .productDetail:
-                        if let product = router.selectedProduct {
-                            ProductDetailView(viewModel: viewModel, router: router, product: product)
-                        }
-                    }
+                    currentView
                 }
             }
-            .onAppear {
-                viewModel.fetchProducts()
-                isLoading = true // Set loading state to true while products are being fetched
-            }
-            .onChange(of: viewModel.products) { _ in
-                isLoading = false // Set loading state to false once products are loaded
-            }
-            .alert(item: $viewModel.alertItem) { alertItem in
-                Alert(title: Text(alertItem.title), message: Text(alertItem.message), dismissButton: .default(Text("OK")))
-            }
-            .navigationBarTitle(router.currentScreen == .productList ? "Products" : router.selectedProduct?.name ?? "Product Details", displayMode: .inline)
-            .navigationBarItems(
-                leading: backButton,
-                trailing: cartCountButton
-            )
+            .onAppear(perform: loadProducts)
+            .onChange(of: viewModel.products) { _, _ in isLoading = false }
+            .alert(item: $viewModel.alertItem, content: createAlert)
+            .navigationBarTitle(currentTitle, displayMode: .inline)
+            .navigationBarItems(leading: backButton, trailing: cartCountButton)
         }
+    }
+
+    private var currentView: some View {
+        switch router.currentScreen {
+        case .productList:
+            return AnyView(ProductListView(viewModel: viewModel, router: router))
+        case .productDetail:
+            if let product = router.selectedProduct {
+                return AnyView(ProductDetailView(viewModel: viewModel, product: product))
+            }
+        }
+        return AnyView(EmptyView())
+    }
+
+    private var currentTitle: String {
+        router.currentScreen == .productList ? "Products" : router.selectedProduct?.name ?? "Product Details"
+    }
+
+    private func loadProducts() {
+        viewModel.fetchProducts()
+        isLoading = true
+    }
+
+    private func createAlert(alertItem: AlertItem) -> Alert {
+        Alert(
+            title: Text(alertItem.title),
+            message: Text(alertItem.message),
+            dismissButton: .default(Text("OK"))
+        )
     }
 
     private var backButton: some View {
         Button(action: {
-            router.currentScreen = .productList
+            router.reset()
         }) {
             if router.currentScreen == .productDetail {
                 Image(systemName: "arrow.backward")

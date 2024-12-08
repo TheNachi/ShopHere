@@ -13,8 +13,4 @@ target 'ShopHere' do
     # Pods for testing
   end
 
-  target 'ShopHereUITests' do
-    # Pods for testing
-  end
-
 end

@@ -15,8 +15,7 @@ class AppAssembly: Assembly {
         }
 
         container.register(ProductListViewModel.self) { resolver in
-            let apiService = resolver.resolve(APIServiceProtocol.self)!
-            return ProductListViewModel(apiService: apiService)
+            ProductListViewModel(apiService: resolver.resolve(APIServiceProtocol.self)!)
         }
     }
 }

@@ -28,28 +28,18 @@ class ProductListViewModel: ObservableObject {
 
     func fetchProducts() {
         apiService.fetchProducts()
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    print("Error fetching products: \(error)")
-                case .finished:
-                    break
-                }
-            }, receiveValue: { [weak self] products in
-                self?.products = products
-                self?.filterProducts()
-            })
+            .sink(receiveCompletion: handleCompletion, receiveValue: handleReceivedProducts)
             .store(in: &cancellables)
     }
 
     func addToCart(product: Product) {
         cartItems.append(product)
-        alertItem = AlertItem(title: "Cart Update", message: "Added \(product.name) to cart.")
+        showAlert(title: "Cart Update", message: "Added \(product.name) to cart.")
     }
 
     func removeFromCart(product: Product) {
         cartItems.removeAll { $0.id == product.id }
-        alertItem = AlertItem(title: "Cart Update", message: "Removed \(product.name) from cart.")
+        showAlert(title: "Cart Update", message: "Removed \(product.name) from cart.")
     }
 
     var cartItemCount: Int {
@@ -57,15 +47,26 @@ class ProductListViewModel: ObservableObject {
     }
 
     func showComingSoon() {
-        alertItem = AlertItem(title: "Coming Soon", message: "This feature is coming soon!")
+        showAlert(title: "Coming Soon", message: "This feature is coming soon!")
     }
 
     private func filterProducts() {
-        if searchQuery.isEmpty {
-            filteredProducts = products
-        } else {
-            filteredProducts = products.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
+        filteredProducts = searchQuery.isEmpty ? products : products.filter { $0.name.lowercased().contains(searchQuery.lowercased()) }
+    }
+
+    private func handleCompletion(_ completion: Subscribers.Completion<Error>) {
+        if case let .failure(error) = completion {
+            print("Error fetching products: \(error)")
+            showAlert(title: "Error", message: "Error fetching products")
         }
     }
-}
 
+    private func handleReceivedProducts(_ products: [Product]) {
+        self.products = products
+        filterProducts()
+    }
+
+    private func showAlert(title: String, message: String) {
+        alertItem = AlertItem(title: title, message: message)
+    }
+}

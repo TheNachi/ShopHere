@@ -11,18 +11,19 @@ import Swinject
 @main
 struct ShopHereApp: App {
     let container: Container
-        init() {
-            container = Container()
-            let assembler = Assembler([AppAssembly()], container: container)
-        }
 
-        var body: some Scene {
-            WindowGroup {
-                if let viewModel = container.resolve(ProductListViewModel.self) {
-                    ProductView(viewModel: viewModel)
-                } else {
-                    Text("Failed to resolve dependencies")
-                }
+    init() {
+        container = Container()
+        _ = Assembler([AppAssembly()], container: container)
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            if let viewModel = container.resolve(ProductListViewModel.self) {
+                ProductView(viewModel: viewModel)
+            } else {
+                Text("Failed to resolve dependencies")
             }
         }
+    }
 }

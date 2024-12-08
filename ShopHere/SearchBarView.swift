@@ -10,11 +10,15 @@ import SwiftUI
 struct SearchBarView: View {
     @Binding var searchQuery: String
 
-        var body: some View {
-            TextField("Search products", text: $searchQuery)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .padding(.horizontal)
-        }
+    var body: some View {
+        searchTextField
+            .padding(.horizontal)
+    }
+
+    private var searchTextField: some View {
+        TextField("Search products", text: $searchQuery)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+    }
 }
