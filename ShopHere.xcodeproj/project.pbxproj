@@ -199,6 +199,7 @@
 		B69FBA6C2D060D6400DA83A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B6DC65162D05837700D2FFB4 /* AlertItem.swift */,
 				B6DC65042D04D20E00D2FFB4 /* Product.swift */,
 			);
 			path = Model;
@@ -207,7 +208,6 @@
 		B69FBA6D2D060E9100DA83A9 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				B6DC65162D05837700D2FFB4 /* AlertItem.swift */,
 				B6DC65142D04FD5200D2FFB4 /* Router.swift */,
 			);
 			path = Helpers;
