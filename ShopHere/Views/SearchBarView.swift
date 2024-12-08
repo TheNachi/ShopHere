@@ -12,7 +12,6 @@ struct SearchBarView: View {
 
     var body: some View {
         searchTextField
-            .padding(.horizontal)
     }
 
     private var searchTextField: some View {

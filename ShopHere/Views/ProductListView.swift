@@ -17,16 +17,30 @@ struct ProductListView: View {
                 SearchBarView(searchQuery: $viewModel.searchQuery)
                 productList
             }
+            .padding(.horizontal)
         }
     }
 
     private var productList: some View {
-        List(viewModel.filteredProducts) { product in
-            Button(action: {
-                router.navigate(to: .productDetail, with: product)
-            }) {
-                productRow(for: product)
+        ScrollView(showsIndicators: false) {
+            LazyVStack(alignment: .leading, spacing: 10) {
+                ForEach(viewModel.filteredProducts) { product in
+                    Button(action: {
+                        router.navigate(to: .productDetail, with: product)
+                    }) {
+                        productRow(for: product)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.gray, lineWidth: 1)
+                            )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
             }
+            .padding(.vertical)
         }
     }
 
@@ -53,7 +67,6 @@ struct ProductListView: View {
                     .foregroundColor(.green)
             }
         }
-        .padding(.vertical, 5)
     }
 
     private func productImage(for url: String) -> some View {

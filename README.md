@@ -31,7 +31,7 @@ Clone the repository:
 
 Navigate to the project directory:
 
-    cd ShopHereApp
+    cd ShopHere
 
 Install the dependencies using CocoaPods:
 
@@ -39,7 +39,7 @@ Install the dependencies using CocoaPods:
 
 Open the generated .xcworkspace file in Xcode:
 
-    open ShopHereApp.xcworkspace
+    open ShopHere.xcworkspace
 
 
 Ensure your environment is configured for iOS 15.0 or later.
