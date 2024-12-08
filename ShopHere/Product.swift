@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Product: Identifiable, Decodable {
+struct Product: Identifiable, Equatable, Decodable {
     let id: Int
     let name: String
     let description: String
@@ -17,4 +17,8 @@ struct Product: Identifiable, Decodable {
     let quantity: Int
     let imageLocation: String
     let status: String
+    
+    static func == (lhs: Product, rhs: Product) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

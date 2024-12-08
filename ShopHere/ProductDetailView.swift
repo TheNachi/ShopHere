@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct ProductDetailView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: ProductListViewModel
+    @ObservedObject var router: Router
     let product: Product
-    
+
+    private var isInCart: Bool {
+        viewModel.cartItems.contains { $0.id == product.id }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             AsyncImage(url: URL(string: product.imageLocation)) { image in
@@ -19,32 +25,38 @@ struct ProductDetailView: View {
                 ProgressView()
             }
             .frame(height: 200)
-            
+
             Text(product.name)
                 .font(.title)
-            
+
             Text("$\(product.price, specifier: "%.2f")")
                 .font(.headline)
                 .foregroundColor(.gray)
-            
+
             Text(product.description)
                 .font(.body)
-            
+
             Spacer()
-            
+
             HStack {
                 Button(action: {
-                    viewModel.addToCart(product: product)
+                    if isInCart {
+                        viewModel.removeFromCart(product: product)
+                    } else {
+                        viewModel.addToCart(product: product)
+                    }
                 }) {
-                    Text("Add to Cart")
+                    Text(isInCart ? "Remove from Cart" : "Add to Cart")
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
-                
-                Button(action: {}) {
+
+                Button(action: {
+                    viewModel.showComingSoon()
+                }) {
                     Text("Buy Now")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -55,6 +67,6 @@ struct ProductDetailView: View {
             }
         }
         .padding()
-        .navigationTitle(product.name)
+        .navigationBarBackButtonHidden(false) 
     }
 }
