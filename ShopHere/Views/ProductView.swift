@@ -52,19 +52,6 @@ struct ProductView: View {
         router.currentScreen == .productList ? "Products" : router.selectedProduct?.name ?? "Product Details"
     }
 
-    private func loadProducts() {
-        viewModel.fetchProducts()
-        isLoading = true
-    }
-
-    private func createAlert(alertItem: AlertItem) -> Alert {
-        Alert(
-            title: Text(alertItem.title),
-            message: Text(alertItem.message),
-            dismissButton: .default(Text("OK"))
-        )
-    }
-
     private var backButton: some View {
         Button(action: {
             router.reset()
@@ -85,5 +72,18 @@ struct ProductView: View {
                     .font(.subheadline)
             }
         }
+    }
+    
+    private func loadProducts() {
+        viewModel.fetchProducts()
+        isLoading = true
+    }
+
+    private func createAlert(alertItem: AlertItem) -> Alert {
+        Alert(
+            title: Text(alertItem.title),
+            message: Text(alertItem.message),
+            dismissButton: .default(Text("OK"))
+        )
     }
 }
